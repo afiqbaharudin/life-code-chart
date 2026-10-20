@@ -1,0 +1,403 @@
+<title>Life Code Chart</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: a birthdate bar on top, then the triangle chart beside three life-stage cards (stacked on phones), then number weights, elements and the working below. */
+:root{
+  --bg:#f2f5f3; --surface:#ffffff; --surface2:#e9efec; --ink:#14201e; --muted:#566663;
+  --line:#cdd8d4; --line-strong:#8fa39d;
+  --accent:#0d6b63; --accent-ink:#ffffff; --accent-soft:#d5ece8;
+  --warm:#955700; --warm-soft:#f6e5c6;
+  --metal:#5b7186; --water:#2866ab; --earth:#94690f; --fire:#b83c25; --wood:#2c7a3f;
+  --font-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --font-body:"Figtree","Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif;
+  --font-cjk:"Noto Sans SC","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1514; --surface:#152120; --surface2:#1d2d2b; --ink:#e4eeeb; --muted:#9db1ad;
+    --line:#2a3d3a; --line-strong:#587570;
+    --accent:#52c2b8; --accent-ink:#06211f; --accent-soft:#18403c;
+    --warm:#e3a64c; --warm-soft:#3a2c12;
+    --metal:#9fb4c8; --water:#72acee; --earth:#dcaa45; --fire:#f48468; --wood:#72d088;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1514; --surface:#152120; --surface2:#1d2d2b; --ink:#e4eeeb; --muted:#9db1ad;
+  --line:#2a3d3a; --line-strong:#587570;
+  --accent:#52c2b8; --accent-ink:#06211f; --accent-soft:#18403c;
+  --warm:#e3a64c; --warm-soft:#3a2c12;
+  --metal:#9fb4c8; --water:#72acee; --earth:#dcaa45; --fire:#f48468; --wood:#72d088;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 var(--font-body);
+  padding-block:28px 56px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap{max-width:1040px; margin-inline:auto; display:flex; flex-direction:column; gap:24px}
+.out{display:flex; flex-direction:column; gap:20px; transition:opacity .2s}
+.out.stale{opacity:.3}
+h1,h2,h3{font-family:var(--font-display); margin:0; text-wrap:balance; line-height:1.12; letter-spacing:-.01em}
+h1{font-size:clamp(2rem,6.5vw,3rem); font-weight:700}
+h2{font-size:1.3rem; font-weight:650}
+h3{font-size:1.05rem; font-weight:650}
+p{margin:0}
+.eyebrow{font-size:.75rem; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:600}
+.lede{color:var(--muted); max-width:62ch; margin-top:10px}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px; border-radius:4px}
+
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; min-width:0}
+.form{display:grid; gap:14px; grid-template-columns:minmax(0,1fr)}
+@media (min-width:680px){ .form{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto; align-items:end} }
+.field{display:flex; flex-direction:column; gap:6px; min-width:0}
+.field label{font-size:.82rem; font-weight:600; color:var(--muted)}
+input[type=text], input[type=date]{
+  font:inherit; font-size:16px; height:48px; padding:0 12px; width:100%; min-width:0;
+  border:1px solid var(--line-strong); border-radius:8px; background:var(--bg); color:var(--ink);
+}
+.btn{font:inherit; font-weight:600; height:48px; padding:0 18px; border-radius:8px; border:1px solid var(--accent); background:transparent; color:var(--accent); cursor:pointer}
+.btn:hover{background:var(--accent-soft)}
+.hint{font-size:.85rem; color:var(--muted); margin-top:12px}
+.err{font-size:.9rem; color:var(--fire); margin-top:12px; font-weight:600}
+.copybox{width:100%; margin-top:12px; font:inherit; font-size:.85rem; min-height:7rem; padding:10px; border-radius:8px; border:1px solid var(--line-strong); background:var(--bg); color:var(--ink)}
+
+.who{font-size:1.1rem; color:var(--muted); font-family:var(--font-display); font-weight:500}
+.strip{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr)); gap:18px 24px; padding:16px 0; border-block:1px solid var(--line)}
+.stat{display:flex; flex-direction:column; gap:2px; min-width:0}
+.stat .v{font-family:var(--font-display); font-weight:700; font-size:2.4rem; line-height:1.05}
+.stat .s{font-size:.88rem; color:var(--muted)}
+
+.results{display:grid; gap:20px; grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){
+  .results{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .results.chartrow{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); align-items:start}
+}
+.tri{display:block; width:100%; max-width:520px; height:auto; margin-inline:auto}
+.tri .cell{stroke:var(--line-strong); stroke-width:1.5; fill:var(--surface)}
+.tri .cell.mid{fill:var(--surface2)}
+.tri .cell.edge{fill:var(--accent-soft)}
+.tri .cell.core{fill:var(--accent)}
+.tri .d{font-family:var(--font-display); font-weight:700; font-size:34px; fill:var(--ink)}
+.tri .d.core{fill:var(--accent-ink)}
+.tri .lab{font-family:var(--font-mono); font-size:11px; fill:var(--muted)}
+.tri .lab.core{fill:var(--accent-ink)}
+.tri .pct{font-family:var(--font-body); font-size:12px; font-weight:600; fill:var(--muted)}
+.tri .pct.hi{fill:var(--warm); font-size:15px; font-weight:700}
+.tri .date{font-family:var(--font-mono); font-size:13px; fill:var(--ink)}
+.cap{font-size:.85rem; color:var(--muted); margin-top:10px}
+
+.stages{display:flex; flex-direction:column; gap:14px; min-width:0}
+.stage{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:10px; min-width:0}
+.stage header{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap}
+.tag{font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:var(--warm); background:var(--warm-soft); padding:3px 9px; border-radius:99px}
+.stage-body{display:flex; gap:14px; align-items:center; min-width:0}
+.stage-body > div:last-child{min-width:0}
+.big{font-family:var(--font-display); font-weight:700; font-size:2.6rem; line-height:1; width:3.6rem; height:3.6rem; display:grid; place-items:center; border-radius:10px; border:2px solid var(--c,var(--line-strong)); flex:none}
+.kw{font-weight:600}
+.zh{font-family:var(--font-cjk); color:var(--muted); font-size:.9rem}
+.work{font-family:var(--font-mono); font-size:.8rem; color:var(--muted); font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.note{font-size:.9rem; color:var(--muted)}
+.el{display:inline-flex; gap:6px; align-items:center; font-size:.82rem; font-weight:600; color:var(--c)}
+
+.rows{list-style:none; margin:12px 0 0; padding:0; display:flex; flex-direction:column}
+.row{display:grid; grid-template-columns:2.6rem minmax(0,1fr); gap:2px 12px; padding:14px 0; border-top:1px solid var(--line); align-items:start}
+.row:first-child{border-top:0}
+.dg{font-family:var(--font-display); font-weight:700; font-size:2rem; line-height:1; color:var(--c,var(--ink)); text-align:center}
+.dg[lang]{font-family:var(--font-cjk); font-size:1.7rem}
+.meter{display:flex; align-items:center; gap:10px}
+.elname{font-weight:600; min-width:4.2ch}
+.bar{flex:1; height:8px; border-radius:4px; background:var(--surface2); overflow:hidden}
+.bar i{display:block; height:100%; width:var(--w); background:var(--c,var(--accent)); border-radius:4px}
+.pctl{font-variant-numeric:tabular-nums; font-weight:600; min-width:3.5ch; text-align:right}
+
+details{border:1px solid var(--line); border-radius:12px; background:var(--surface)}
+summary{cursor:pointer; padding:14px 16px; font-family:var(--font-display); font-weight:650; list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; float:right; font-weight:400}
+details[open] summary::after{content:"\2013"}
+.dbody{padding:0 16px 16px}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse; width:100%; min-width:460px; font-size:.9rem}
+th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+td.m{font-family:var(--font-mono); font-variant-numeric:tabular-nums}
+.dbody ul{margin:0; padding-left:1.1rem; display:flex; flex-direction:column; gap:8px}
+.foot{font-size:.85rem; color:var(--muted); max-width:70ch}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Numerology &middot; <span lang="zh-Hans">生命密码</span></p>
+    <h1>Life Code Chart</h1>
+    <p class="lede">Enter a birthdate. The chart shows the core number, the 20&ndash;40, 40&ndash;60 and 60&ndash;80 life stages, and the element and health notes from the class worksheet.</p>
+  </header>
+
+  <section class="panel" aria-label="Birthdate">
+    <form class="form" id="form" autocomplete="off">
+      <div class="field">
+        <label for="nm">Name (optional)</label>
+        <input type="text" id="nm" maxlength="60" placeholder="Shown above the chart">
+      </div>
+      <div class="field">
+        <label for="dob">Date of birth</label>
+        <input type="date" id="dob" min="1900-01-01" value="1990-06-15">
+      </div>
+      <button class="btn" type="button" id="copy">Copy summary</button>
+    </form>
+    <p class="hint" id="example">This is an example date (15 Jun 1990). Change it to see your own chart.</p>
+    <p class="err" id="err" role="alert" hidden></p>
+    <p class="hint" id="copystat" role="status" hidden></p>
+    <textarea class="copybox" id="copybox" readonly hidden aria-label="Summary text"></textarea>
+  </section>
+
+  <main class="out" id="out">
+    <p class="who" id="who"></p>
+    <div class="strip" id="strip"></div>
+
+    <div class="results chartrow">
+      <figure class="panel" style="margin:0">
+        <div id="chart"></div>
+        <figcaption class="cap">Weights: core (bottom) 60%, the two outer corners 10% each, the other four boxes 5% each.</figcaption>
+      </figure>
+      <div class="stages" id="stages"></div>
+    </div>
+
+    <div class="results">
+      <section class="panel"><h2>Numbers in this chart</h2><ol class="rows" id="profile"></ol></section>
+      <section class="panel"><h2>Elements and health</h2><ol class="rows" id="elements"></ol><p class="note" style="margin-top:8px">Health notes are copied from the worksheet. They are not medical advice.</p></section>
+    </div>
+
+    <details><summary>How the numbers were worked out</summary><div class="dbody"><div class="tablewrap" id="work"></div></div></details>
+    <details><summary>Pair readings (worksheet slots 1&ndash;11)</summary><div class="dbody"><p class="note" style="margin-bottom:10px">The worksheet has 11 blank comment slots. Each one is filled here with the digits that belong to it.</p><div class="tablewrap" id="pairs"></div></div></details>
+    <details><summary>Notes copied from the worksheet</summary><div class="dbody"><ul>
+      <li>On the sample sheet, 60% = 7 was noted as &ldquo;lawyer&rdquo;, 10% = 1 as &ldquo;independent but lonely&rdquo;, and 2 as &ldquo;comm talk / collab / dependent&rdquo;.</li>
+      <li>Inner number: the sample sheet doubles the core number (7 &times; 2 = 14 &rarr; 5).</li>
+      <li>Written in the notes box: &ldquo;5, 7 &rarr; bankruptcy no.&rdquo; and &ldquo;7, 5&rdquo;. The sheet does not say how to apply it.</li>
+      <li>Written under the number table: &ldquo;no 4 &mdash; don&rsquo;t be housewife&rdquo;.</li>
+      <li>Age labels on the sheet: 20&ndash;40 (&ldquo;career&rdquo;) beside the left result box, 40&ndash;60 beside the bottom result box, 60&ndash;80 beside the right result box. No other ages are marked.</li>
+    </ul></div></details>
+  </main>
+
+  <p class="foot">This is a traditional numerology method taken from a class worksheet. Teachers read it differently, and it has not been shown to predict personality or life events. Use it for reflection, not for big decisions. Everything is calculated in your browser. Nothing is sent or saved.</p>
+</div>
+
+<script>
+(function(){
+//#CALC-START
+var WT={I:10,J:5,K:5,L:10,M:5,N:5,O:60};
+var ELEM_OF={1:'Metal',6:'Metal',2:'Water',7:'Water',5:'Earth',3:'Fire',8:'Fire',4:'Wood',9:'Wood'};
+function red(n){while(n>9){var t=String(n),s=0;for(var i=0;i<t.length;i++)s+=+t[i];n=s}return n}
+function chain(n){
+  if(n<=9)return String(n);
+  var out=[],cur=n;
+  while(cur>9){var t=String(cur).split(''),s=0;t.forEach(function(x){s+=+x});out.push(t.join(' + ')+' = '+s);cur=s}
+  return out.join(' → ');
+}
+function pairWork(a,b){
+  var s=a+b;
+  return a+' + '+b+' = '+s+(s>9?' → '+String(s).split('').join(' + ')+' = '+red(s):'');
+}
+function calc(y,m,d){
+  var ys=String(y),parts=[('0'+d).slice(-2),('0'+m).slice(-2),ys.slice(0,2),ys.slice(2)];
+  var v={};
+  v.I=red(+parts[0]);v.J=red(+parts[1]);v.K=red(+parts[2]);v.L=red(+parts[3]);
+  v.M=red(v.I+v.J);v.N=red(v.K+v.L);v.O=red(v.M+v.N);
+  v.S=red(v.I+v.M);v.T=red(v.J+v.M);v.X=red(v.S+v.T);
+  v.U=red(v.K+v.N);v.V=red(v.L+v.N);v.Z=red(v.U+v.V);
+  v.P=red(v.N+v.O);v.Q=red(v.M+v.O);v.R=red(v.P+v.Q);
+  var W={};
+  ['I','J','K','L','M','N','O'].forEach(function(k){W[v[k]]=(W[v[k]]||0)+WT[k]});
+  var E={Metal:0,Water:0,Earth:0,Fire:0,Wood:0};
+  Object.keys(W).forEach(function(g){if(ELEM_OF[g])E[ELEM_OF[g]]+=W[g]});
+  return {parts:parts,v:v,W:W,E:E,inner:red(v.O*2)};
+}
+//#CALC-END
+
+var NUM={
+  0:{kw:'Not on the worksheet table',zh:'',short:'None',notes:[],career:[]},
+  1:{kw:'Leader · Independent · Alone',zh:'领导，独立，孤独',short:'Leader',notes:['Self','Independent but lonely'],career:[]},
+  2:{kw:'Talk · Soft-hearted',zh:'沟通，和蔼的',short:'Communicator',notes:['Communicative and collaborative','Can be dependent'],career:[]},
+  3:{kw:'Aggressive · Fast',zh:'侵略性，快速',short:'Fast mover',notes:['Impatient','Short-tempered'],career:[]},
+  4:{kw:'Plan · Intelligence',zh:'计划，聪明',short:'Planner',notes:['Overthinking can lead to depression or anxiety','Needs security'],career:['Academic','Creating systems']},
+  5:{kw:'Obstacles · Stubborn · Firm',zh:'障碍，顽固',short:'Stubborn',notes:['Direction and freedom','Hard to commit'],career:[]},
+  6:{kw:'Money · Family-oriented',zh:'财富，家庭为重',short:'Family and money',notes:['Control freak'],career:[]},
+  7:{kw:'Network · Luck',zh:'人缘，运气',short:'Networker',notes:['Charismatic, argumentative','Trust issues','Naturally unique'],career:['Lawyer']},
+  8:{kw:'Stress · Responsibility',zh:'压力，责任',short:'Responsible',notes:['Self-convinced'],career:['Entrepreneur','Researcher']},
+  9:{kw:'Business · Success',zh:'机会，成功',short:'Business mind',notes:['Greedy (tamak)','Opportunity'],career:['Business']}
+};
+var EL={
+  Metal:{zh:'金',nums:'1, 6',c:'var(--metal)',health:'Lungs, large intestine, skin, respiratory system'},
+  Water:{zh:'水',nums:'2, 7',c:'var(--water)',health:'Kidney, bladder, lower back, impotence, central nervous system'},
+  Earth:{zh:'土',nums:'5',c:'var(--earth)',health:'Stomach, pancreas, immune system, digestion'},
+  Fire:{zh:'火',nums:'3, 8',c:'var(--fire)',health:'Heart, small intestine, blood circulation, blood'},
+  Wood:{zh:'木',nums:'4, 9',c:'var(--wood)',health:'Bone, liver, gallbladder, eyes'}
+};
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function pad(n){return ('0'+n).slice(-2)}
+function elc(g){return EL[ELEM_OF[g]] ? EL[ELEM_OF[g]].c : 'var(--line-strong)'}
+function elChip(g){
+  var n=ELEM_OF[g]; if(!n)return '';
+  return '<span class="el" style="--c:'+EL[n].c+'"><span lang="zh-Hans">'+EL[n].zh+'</span> '+n+'</span>';
+}
+function workLine(a,b,v){
+  var s=v[a]+v[b];
+  return a+' '+v[a]+' + '+b+' '+v[b]+' = '+s+(s>9?' → '+String(s).split('').join(' + ')+' = '+red(s):'');
+}
+
+function chartSVG(c){
+  var v=c.v,p=c.parts;
+  var poly=function(cls,pts){return '<polygon class="cell '+cls+'" points="'+pts+'"/>'};
+  var t=function(cls,x,y,txt,anchor){return '<text class="'+cls+'" x="'+x+'" y="'+y+'" text-anchor="'+(anchor||'middle')+'" dominant-baseline="central">'+txt+'</text>'};
+  var label='Life Code triangle. Top row '+v.I+', '+v.J+', '+v.K+', '+v.L+'. Middle row '+v.M+', '+v.N+'. Core number '+v.O+'.';
+  return '<svg class="tri" viewBox="0 0 400 284" role="img" aria-label="'+label+'" xmlns="http://www.w3.org/2000/svg">'
+    +[80,160,240,320].map(function(x,i){return t('date',x,12,p[i])}).join('')
+    +poly('edge','40,26 120,26 120,106 93.33,106')
+    +poly('mid','120,26 200,26 200,106 120,106')
+    +poly('mid','200,26 280,26 280,106 200,106')
+    +poly('edge','280,26 360,26 306.67,106 280,106')
+    +poly('mid','93.33,106 200,106 200,186 146.67,186')
+    +poly('mid','200,106 306.67,106 253.33,186 200,186')
+    +poly('core','146.67,186 253.33,186 200,266')
+    +t('lab',56,42,'I','start')+t('lab',126,42,'J','start')+t('lab',206,42,'K','start')+t('lab',286,42,'L','start')
+    +t('lab',110,122,'M','start')+t('lab',206,122,'N','start')+t('lab core',200,203,'O')
+    +t('d',100,70,v.I)+t('d',160,66,v.J)+t('d',240,66,v.K)+t('d',300,70,v.L)
+    +t('d',160,144,v.M)+t('d',240,144,v.N)+t('d core',200,228,v.O)
+    +t('pct',34,40,'10%','end')+t('pct',366,40,'10%','start')
+    +t('pct',160,96,'5%')+t('pct',240,96,'5%')+t('pct',172,174,'5%')+t('pct',228,174,'5%')
+    +t('pct hi',242,224,'60%','start')
+    +'</svg>';
+}
+
+function stageHTML(age,tag,key,a,b,v){
+  var r=v[key],n=NUM[r];
+  return '<article class="stage"><header><h3>Ages '+age+'</h3>'+(tag?'<span class="tag">'+tag+'</span>':'')+'</header>'
+    +'<div class="stage-body"><div class="big" style="--c:'+elc(r)+'">'+r+'</div><div>'
+    +'<p class="kw">'+n.kw+'</p>'+(n.zh?'<p class="zh" lang="zh-Hans">'+n.zh+'</p>':'')+elChip(r)+'</div></div>'
+    +'<p class="work">'+key+' = '+workLine(a,b,v)+'</p>'
+    +(n.notes.length?'<p class="note">'+n.notes.join(' · ')+'</p>':'')
+    +(n.career.length?'<p class="note"><strong>Career hints:</strong> '+n.career.join(', ')+'</p>':'')
+    +'</article>';
+}
+
+function fmtDate(y,m,d){return d+' '+MONTHS[m-1]+' '+y}
+
+var dob=$('dob'),nm=$('nm'),out=$('out'),err=$('err'),example=$('example');
+var t=new Date(),todayStr=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate());
+dob.max=todayStr;
+var summaryText='';
+
+function showErr(msg){err.textContent=msg;err.hidden=false;out.classList.add('stale');summaryText=''}
+
+function render(){
+  var val=dob.value;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(val)){showErr('Choose a full birthdate to see the chart.');return}
+  var y=+val.slice(0,4),m=+val.slice(5,7),d=+val.slice(8,10);
+  if(y<1900||val>todayStr){showErr('Enter a date from 1 Jan 1900 up to today.');return}
+  err.hidden=true;out.classList.remove('stale');
+
+  var c=calc(y,m,d),v=c.v,name=nm.value.trim();
+  var dl=fmtDate(y,m,d);
+  $('who').innerHTML=(name?esc(name)+' &middot; ':'')+dl;
+
+  // strongest element
+  var best='Metal';Object.keys(c.E).forEach(function(k){if(c.E[k]>c.E[best])best=k});
+  var outer=v.I===v.L?String(v.I):v.I+' & '+v.L;
+  var outerSub=v.I===v.L?'Same number on both corners, 10% + 10%':'10% each';
+  var o2=v.O*2;
+  $('strip').innerHTML=
+    '<div class="stat"><span class="eyebrow">Core number</span><span class="v">'+v.O+'</span><span class="s">60% &middot; '+NUM[v.O].kw+'</span></div>'
+   +'<div class="stat"><span class="eyebrow">Outer numbers</span><span class="v">'+outer+'</span><span class="s">'+outerSub+'</span></div>'
+   +'<div class="stat"><span class="eyebrow">Inner number</span><span class="v">'+c.inner+'</span><span class="s">Core &times; 2 = '+o2+(o2>9?' → '+c.inner:'')+'</span></div>'
+   +'<div class="stat"><span class="eyebrow">Strongest element</span><span class="v"><span lang="zh-Hans">'+EL[best].zh+'</span> '+best+'</span><span class="s">'+c.E[best]+'% of the chart</span></div>';
+
+  $('chart').innerHTML=chartSVG(c);
+  $('stages').innerHTML=
+    stageHTML('20–40','Career','X','S','T',v)
+   +stageHTML('40–60','','R','P','Q',v)
+   +stageHTML('60–80','','Z','U','V',v);
+
+  // number profile
+  var digs=Object.keys(c.W).map(Number).sort(function(a,b){return c.W[b]-c.W[a]||a-b});
+  $('profile').innerHTML=digs.map(function(g){
+    var n=NUM[g];
+    return '<li class="row" style="--c:'+elc(g)+'"><div class="dg">'+g+'</div><div>'
+      +'<div class="meter"><span class="kw">'+n.kw+'</span></div>'
+      +'<div class="meter" style="margin-top:6px"><div class="bar" style="--w:'+c.W[g]+'%"><i></i></div><span class="pctl">'+c.W[g]+'%</span></div>'
+      +(n.zh?'<p class="zh" lang="zh-Hans">'+n.zh+'</p>':'')
+      +(n.notes.length?'<p class="note">'+n.notes.join(' · ')+'</p>':'')
+      +(n.career.length?'<p class="note"><strong>Career hints:</strong> '+n.career.join(', ')+'</p>':'')
+      +'</div></li>';
+  }).join('');
+
+  // elements
+  var els=Object.keys(c.E).sort(function(a,b){return c.E[b]-c.E[a]});
+  $('elements').innerHTML=els.map(function(k){
+    var e=EL[k],w=c.E[k];
+    return '<li class="row" style="--c:'+e.c+'"><div class="dg" lang="zh-Hans">'+e.zh+'</div><div>'
+      +'<div class="meter"><span class="elname">'+k+'</span><div class="bar" style="--w:'+w+'%"><i></i></div><span class="pctl">'+w+'%</span></div>'
+      +'<p class="note">Numbers '+e.nums+(w>0?' &middot; '+e.health:' &middot; none in this chart')+'</p></div></li>';
+  }).join('');
+
+  // working
+  var P=c.parts;
+  var rows=[
+    ['I','Day '+P[0],chain(+P[0])],['J','Month '+P[1],chain(+P[1])],['K','Century '+P[2],chain(+P[2])],['L','Year '+P[3],chain(+P[3])],
+    ['M','I + J',pairWork(v.I,v.J)],['N','K + L',pairWork(v.K,v.L)],['O','M + N',pairWork(v.M,v.N)],
+    ['S','I + M',pairWork(v.I,v.M)],['T','J + M',pairWork(v.J,v.M)],['X','S + T',pairWork(v.S,v.T)],
+    ['U','K + N',pairWork(v.K,v.N)],['V','L + N',pairWork(v.L,v.N)],['Z','U + V',pairWork(v.U,v.V)],
+    ['P','N + O',pairWork(v.N,v.O)],['Q','M + O',pairWork(v.M,v.O)],['R','P + Q',pairWork(v.P,v.Q)]
+  ];
+  $('work').innerHTML='<table><thead><tr><th>Box</th><th>From</th><th>Working</th><th>Result</th></tr></thead><tbody>'
+    +rows.map(function(r){return '<tr><td><strong>'+r[0]+'</strong></td><td>'+r[1]+'</td><td class="m">'+r[2]+'</td><td class="m"><strong>'+v[r[0]]+'</strong></td></tr>'}).join('')
+    +'</tbody></table>';
+
+  // pairs
+  var slots=[['1','O',['O']],['2','IJ',['I','J']],['3','KL',['K','L']],['4','MN',['M','N']],['5','ST',['S','T']],['6','UV',['U','V']],['7','PQ',['P','Q']],['8','LN',['L','N']],['9','N',['N']],['10','NO',['N','O']],['11','OP',['O','P']]];
+  $('pairs').innerHTML='<table><thead><tr><th>#</th><th>Slot</th><th>Digits</th><th>Keywords</th></tr></thead><tbody>'
+    +slots.map(function(s){
+      var ds=s[2].map(function(k){return v[k]});
+      return '<tr><td>'+s[0]+'</td><td class="m">'+s[1]+'</td><td class="m"><strong>'+ds.join(' · ')+'</strong></td><td>'+ds.map(function(g){return NUM[g].short}).join(' + ')+'</td></tr>';
+    }).join('')+'</tbody></table>';
+
+  // copyable summary
+  summaryText=['Life Code · '+(name?name+' · ':'')+dl,
+    'Core number '+v.O+' (60%): '+NUM[v.O].kw,
+    'Outer numbers (10% each): '+(v.I===v.L?v.I+' and '+v.L:v.I+' and '+v.L),
+    'Inner number: '+c.inner,
+    '20-40: '+v.X+' ('+NUM[v.X].kw+')',
+    '40-60: '+v.R+' ('+NUM[v.R].kw+')',
+    '60-80: '+v.Z+' ('+NUM[v.Z].kw+')',
+    'Weights: '+digs.map(function(g){return g+' = '+c.W[g]+'%'}).join(', '),
+    'Elements: '+els.filter(function(k){return c.E[k]>0}).map(function(k){return k+' '+c.E[k]+'%'}).join(', ')].join('\n');
+}
+
+$('form').addEventListener('submit',function(e){e.preventDefault()});
+dob.addEventListener('input',function(){example.hidden=true;render()});
+nm.addEventListener('input',render);
+
+var box=$('copybox'),stat=$('copystat');
+$('copy').addEventListener('click',function(){
+  if(!summaryText){return}
+  function manual(){box.value=summaryText;box.hidden=false;box.focus();box.select();stat.textContent='Copy was blocked. The text is selected below, so you can copy it yourself.';stat.hidden=false}
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(summaryText).then(function(){box.hidden=true;stat.textContent='Summary copied.';stat.hidden=false},manual);
+    }else{manual()}
+  }catch(e){manual()}
+});
+
+render();
+})();
+</script>
